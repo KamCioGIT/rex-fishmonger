@@ -22,45 +22,59 @@ Citizen.CreateThread(function()
     end
 end)
 
------------------------------------------------------------------
--- fish mongers hours system
------------------------------------------------------------------
+--------------------------------------
+-- fishmonger shop hours system
+--------------------------------------
 local OpenFishMongers = function()
-    local hour = GetClockHours()
-    if (hour < Config.OpenTime) or (hour >= Config.CloseTime) then
-        lib.notify({
-            title = Lang:t('client.lang_8'),
-            description = Lang:t('client.lang_9')..Config.OpenTime..Lang:t('client.lang_10'),
-            type = 'error',
-            icon = 'fa-solid fa-shop',
-            iconAnimation = 'shake',
-            duration = 7000
-        })
-        return
+    if not Config.AlwaysOpen then
+        local hour = GetClockHours()
+        if (hour < Config.OpenTime) or (hour >= Config.CloseTime) and not Config.AlwaysOpen then
+            lib.notify({
+                title = Lang:t('client.lang_8'),
+                description = Lang:t('client.lang_9')..Config.OpenTime..Lang:t('client.lang_10'),
+                type = 'error',
+                icon = 'fa-solid fa-shop',
+                iconAnimation = 'shake',
+                duration = 7000
+            })
+            return
+        end
     end
     TriggerEvent('rex-fishmonger:client:mainmenu')
 end
 
--- get fish monger hours function
+--------------------------------------
+-- get fishmonger hours function
+--------------------------------------
 local GetFishMongerHours = function()
     local hour = GetClockHours()
-    if (hour < Config.OpenTime) or (hour >= Config.CloseTime) then
-        for k, v in pairs(SpawnedFishMongerBilps) do
-            Citizen.InvokeNative(0x662D364ABF16DE2F, v, joaat('BLIP_MODIFIER_MP_COLOR_2'))
+    if not Config.AlwaysOpen then
+        if (hour < Config.OpenTime) or (hour >= Config.CloseTime) then
+            for k, v in pairs(SpawnedFishMongerBilps) do
+                BlipAddModifier(v, joaat('BLIP_MODIFIER_MP_COLOR_2'))
+            end
+        else
+            for k, v in pairs(SpawnedFishMongerBilps) do
+                BlipAddModifier(v, joaat('BLIP_MODIFIER_MP_COLOR_8'))
+            end
         end
     else
         for k, v in pairs(SpawnedFishMongerBilps) do
-            Citizen.InvokeNative(0x662D364ABF16DE2F, v, joaat('BLIP_MODIFIER_MP_COLOR_8'))
+            BlipAddModifier(v, joaat('BLIP_MODIFIER_MP_COLOR_8'))
         end
     end
 end
 
--- get fish monger hours on player loading
+--------------------------------------
+-- get fishmonger hours on player loading
+--------------------------------------
 RegisterNetEvent('RSGCore:Client:OnPlayerLoaded', function()
     GetFishMongerHours()
 end)
 
--- update shop hours every min
+---------------------------------
+-- update fishmonger hours every min
+---------------------------------
 CreateThread(function()
     while true do
         GetFishMongerHours()

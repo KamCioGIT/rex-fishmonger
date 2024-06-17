@@ -3,14 +3,15 @@ Config = {}
 ---------------------------------
 -- settings
 ---------------------------------
-Config.Debug = false
-Config.KeyBind = 'J'
+Config.Debug         = false
+Config.KeyBind       = 'J'
 Config.DistanceSpawn = 20.0
-Config.FadeIn = true
-Config.OpenTime = 6
-Config.CloseTime = 18
-Config.EnableTarget = true
-Config.SellTime = 10000
+Config.FadeIn        = true
+Config.OpenTime      = 6
+Config.CloseTime     = 18
+Config.AlwaysOpen    = true
+Config.EnableTarget  = true
+Config.SellTime      = 10000
 
 ---------------------------------
 -- webhook settings
